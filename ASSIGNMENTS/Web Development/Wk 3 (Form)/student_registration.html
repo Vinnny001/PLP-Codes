@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registration Form</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    label, input, select, textarea {
+        display: block;
+        margin-bottom: 10px;
+    }
+    input[type="radio"] {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    button{
+        padding: 10px 20px;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover, input[type="button"]:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+    <h1>Student Registration Form</h1>
+    <form action="" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="Date of birth" required>
+        
+        <label>Gender:</label>
+        <input type="radio" id="male" name="gender" value="male" required>
+        <label for="male">Male</label>
+        <input type="radio" id="female" name="gender" value="female" required>
+        <label for="female">Female</label>
+        
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="3" required></textarea>
+        
+        <label for="telephone">Telephone:</label>
+        <input type="tel" id="telephone" name="telephone" required>
+        
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <label for="course">Course:</label>
+        <select id="course" name="course" required>
+            <option value="web-development">Web Development</option>
+            <option value="data-science">Data Science</option>
+            <option value="ux-design">UX Design</option>
+        </select>
+        
+        <button type="submit">Register</button>
+        <button type="reset">Cancel</button>
+    </form>
+</body>
+</html>
