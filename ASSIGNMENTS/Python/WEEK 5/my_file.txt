@@ -1,0 +1,6 @@
+Learning Python is great.
+Week 5 is amaizing
+Accessing files is not that dificult
+It involves functions
+I was able to learn variables.
+Error handling is also important
