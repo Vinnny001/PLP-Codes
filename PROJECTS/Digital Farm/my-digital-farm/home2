@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Welcome to our Digital Farm. Explore our various sections such as Sheep, Poultry, Cattle, and Land. Get land purchase advice and more.">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .container a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 100px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .container a:hover {
+            background-color: #45a049;
+        }
+        .more-section {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+        .more-section h2 {
+            margin-bottom: 10px;
+        }
+        .more-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .more-section li {
+            margin-bottom: 10px;
+        }
+        .more-section a {
+            text-decoration: none;
+            color: #4CAF50;
+            transition: color 0.3s;
+        }
+        .more-section a:hover {
+            color: #45a049;
+        }
+        footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            background-color: #4CAF50;
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+        footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #dddddd;
+        }
+        .profile-photo-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .profile-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lastName = localStorage.getItem('lastName');
+            if (lastName) {
+                document.getElementById('lastName').textContent = lastName;
+            }
+
+            const profilePhoto = localStorage.getItem('profilePhoto');
+            if (profilePhoto) {
+                document.getElementById('profilePhoto').src = profilePhoto;
+            }
+        });
+
+        function changeProfilePhoto(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('profile-photo-input');
+            const formData = new FormData();
+            formData.append('profilePhoto', fileInput.files[0]);
+            formData.append('email', localStorage.getItem('email')); // Ensure the email is stored in localStorage
+
+            fetch('/upload-profile-photo', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Profile photo updated successfully') {
+                    alert('Profile photo updated successfully');
+                    document.getElementById('profilePhoto').src = data.profilePhotoPath;
+                    localStorage.setItem('profilePhoto', data.profilePhotoPath); // Save the new photo path
+                } else {
+                    alert('Error updating profile photo');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome, <span id="lastName"></span>!</h1>
+    <div class="profile-photo-container">
+        <img src="path/to/default/photo.jpg" alt="Profile Photo" class="profile-photo" id="profilePhoto">
+    </div>
+    <form onsubmit="changeProfilePhoto(event)">
+        <label for="profile-photo-input">Change Profile Photo:</label>
+        <input type="file" id="profile-photo-input" name="profilePhoto" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div class="container">
+        <a href="sheep.html" aria-label="Sheep section">SHEEP</a>
+        <a href="poultry.html" aria-label="Poultry section">POULTRY</a>
+        <a href="cattle.html" aria-label="Cattle section">CATTLE</a>
+        <a href="land.html" aria-label="Land section">LAND</a>
+    </div>
+    <div class="more-section">
+        <h2>MORE</h2>
+        <ul>
+            <li><a href="land-purchase-advice.html" aria-label="Land purchase advice">Land purchase advice</a></li>
+        </ul>
+    </div>
+    <footer>
+        <a href="home.html" aria-label="Home page">HOME</a>
+        <a href="assets.html" aria-label="Assets page">ASSETS</a>
+        <a href="settings.html" aria-label="Settings page">SETTINGS</a>
+        <a href="help.html" aria-label="Help page">HELP</a>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container label {
+            display: block;
+            margin-top: 10px;
+        }
+        .container input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .container button {
+            width: 48%;
+            padding: 10px;
+            margin: 10px 1%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .container .submit {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .container .reset {
+            background-color: #f44336;
+            color: white;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registration</h2>
+        <form id="registrationForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required>
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            
+            <label for="phone">Phone Number:</label>
+            <input type="number" type="tel" pattern="[0-9]{10}" id="phone" name="phone" placeholder="Enter your phone number" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" maxlength="25" minlength="8" id="password" name="password" placeholder="Enter your password" required>
+            
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+
+            <label for="updates">Receive our updates?</label>
+            <input type="checkbox" id="updates" name="updates">
+            
+            <button type="submit" class="submit">SUBMIT</button>
+            <button type="reset" class="reset">RESET</button>
+            <button type="button" class="submit" onclick="location.href='index.html'">HOME PAGE</button>
+
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+
+        <div id="tokens" style="display:none;">
+            <input type="hidden" id="emailToken">
+            <input type="hidden" id="phoneToken">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Convert checkbox to boolean
+            data.updates = formData.get('updates') === 'on';
+
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                document.getElementById('errorMessage').innerText = 'Passwords do not match.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    document.getElementById('errorMessage').innerText = result.message;
+                } else {
+                    // Show tokens to the user
+                    document.getElementById('emailToken').value = result.emailToken;
+                    document.getElementById('phoneToken').value = result.phoneToken;
+                    // Redirect to verification page with tokens
+                    const url = new URL('verify.html', window.location.origin);
+                    url.searchParams.append('emailToken', result.emailToken);
+                    url.searchParams.append('phoneToken', result.phoneToken);
+                    window.location.href = url.toString();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error with your registration. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

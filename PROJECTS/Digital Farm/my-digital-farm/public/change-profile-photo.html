@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change Profile Photo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      max-width: 600px;
+      margin: 2rem auto;
+      background-color: #f0f8ff; /* Light blue background */
+      color: #333; /* Dark text color */
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #007bff; /* Blue heading color */
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background-color: #fff; /* White background for form container */
+      border-radius: 8px; /* Rounded corners */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+    }
+
+    input[type="file"] {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+
+    .button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 2rem; /* Space between the button and the footer */
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    .photo-preview {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .photo-preview img {
+      max-width: 100px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+    }
+
+    footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #4CAF50;
+      padding: 10px 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    footer a:hover {
+      color: #dddddd;
+    }
+  </style>
+  <script>
+    async function fetchProfilePhoto() {
+      try {
+        const response = await fetch('/fetch-user-data');
+        if (response.ok) {
+          const userData = await response.json();
+          if (userData.profilePhoto) {
+            document.getElementById('photo-preview').innerHTML = `<img src="${userData.profilePhoto}" alt="Profile Photo" class="photo-preview-img">`;
+          }
+        } else {
+          console.error('Failed to fetch user data:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+
+    async function uploadProfilePhoto(event) {
+      event.preventDefault();
+      const formData = new FormData(document.getElementById('profile-photo-form'));
+      try {
+        const response = await fetch('/upload-profile-photo', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+          alert('Profile photo updated successfully');
+          window.location.href = '/home.html';
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error('Error uploading profile photo:', error);
+        alert('An error occurred while uploading profile photo.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchProfilePhoto();
+      document.getElementById('profile-photo-form').addEventListener('submit', uploadProfilePhoto);
+    });
+  </script>
+</head>
+<body>
+  <h1>Change Profile Photo</h1>
+  <form id="profile-photo-form" enctype="multipart/form-data">
+    <div class="form-container">
+      <label for="profilePhoto">Profile Photo:</label>
+      <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" required>
+    </div>
+    <div class="photo-preview" id="photo-preview">
+      <!-- Profile photo preview will be shown here -->
+    </div>
+    <button type="submit" class="button">Upload Photo</button>
+  </form>
+
+  <footer>
+    <a href="home.html" aria-label="Home page">HOME</a>
+    <a href="assets.html" aria-label="Assets page">ASSETS</a>
+    <a href="settings.html" aria-label="Settings page">SETTINGS</a>
+    <a href="help.html" aria-label="Help page">HELP</a>
+  </footer>
+</body>
+</html>

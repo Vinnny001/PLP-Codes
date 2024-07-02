@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      max-width: 600px;
+      margin: 2rem auto;
+      background-color: #f0f8ff; /* Light blue background */
+      color: #333; /* Dark text color */
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #007bff; /* Blue heading color */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #0056b3; /* Darker blue for labels */
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background-color: #fff; /* White background for form container */
+      border-radius: 8px; /* Rounded corners */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+    }
+
+    input,
+    select {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+
+    input[readonly] {
+      background-color: #e9ecef; /* Gray background for readonly fields */
+      color: #6c757d; /* Dark gray text color for readonly fields */
+    }
+
+    .button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 2rem; /* Space between the button and the footer */
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    .form-container + .form-container {
+      margin-top: 1rem;
+    }
+
+    .photo-preview {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .photo-preview img {
+      max-width: 100px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        margin: 1rem;
+      }
+      
+      .form-container {
+        padding: 0.5rem;
+      }
+    }
+
+    footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #4CAF50;
+      padding: 10px 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    footer a:hover {
+      color: #dddddd;
+    }
+  </style>
+
+  <script>
+    async function fetchUserData() {
+      try {
+        const response = await fetch('/fetch-user-data');
+        if (response.ok) {
+          const userData = await response.json();
+          document.getElementById('firstName').value = userData.firstName;
+          document.getElementById('lastName').value = userData.lastName;
+          document.getElementById('phoneNumber').value = userData.phone;
+          document.getElementById('email').value = userData.email;
+          if (userData.profilePhoto) {
+            document.getElementById('photo-preview').innerHTML = `<img src="${userData.profilePhoto}" alt="Profile Photo" class="photo-preview-img">`;
+          }
+        } else {
+          console.error('Failed to fetch user data:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+
+    async function saveSettings(event) {
+      event.preventDefault();
+      const formData = new FormData(document.getElementById('settings-form'));
+      try {
+        const response = await fetch('/update-settings', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+          alert('Settings updated successfully');
+          window.location.href = '/home.html';
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error('Error saving settings:', error);
+        alert('An error occurred while saving settings.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchUserData();
+      document.getElementById('settings-form').addEventListener('submit', saveSettings);
+    });
+  </script>
+</head>
+<body>
+  <h1>Settings</h1>
+  <form id="settings-form" enctype="multipart/form-data">
+    <div class="form-container">
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" name="firstName" required>
+    </div>
+    <div class="form-container">
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" name="lastName" required>
+    </div>
+    <div class="form-container">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="tel" id="phoneNumber" name="phoneNumber" pattern="[0-9]{10}" required>
+    </div>
+
+    <div class="form-container">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" readonly>
+    </div>
+
+    <button type="submit" class="button">Save Settings</button>
+
+    <div class="photo-preview" id="photo-preview">
+      <!-- Profile photo preview will be shown here -->
+    </div>
+    <div class="form-container">
+      <a href="change-profile-photo.html" class="button">Change Profile Photo</a>
+    </div>
+    
+  </form>
+
+  <footer>
+    <a href="home.html" aria-label="Home page">HOME</a>
+    <a href="assets.html" aria-label="Assets page">ASSETS</a>
+    <a href="settings.html" aria-label="Settings page">SETTINGS</a>
+    <a href="help.html" aria-label="Help page">HELP</a>
+  </footer>
+</body>
+</html>
