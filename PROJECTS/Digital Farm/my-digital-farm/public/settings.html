@@ -117,7 +117,53 @@
     footer a:hover {
       color: #dddddd;
     }
+    
+    .error {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
   </style>
+</head>
+<body>
+  <h1>Settings</h1>
+  <form id="settings-form" enctype="multipart/form-data">
+    <div class="form-container">
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" name="firstName" required>
+    </div>
+    <div class="form-container">
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" name="lastName" required>
+    </div>
+    <div class="form-container">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="tel" id="phoneNumber" name="phoneNumber" pattern="\d{10}" required>
+      <span id="phoneError" class="error"></span>
+    </div>
+
+    <div class="form-container">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" readonly>
+    </div>
+
+    <button type="submit" class="button">Save Settings</button>
+
+    <div class="photo-preview" id="photo-preview">
+      <!-- Profile photo preview will be shown here -->
+    </div>
+    <div class="form-container">
+      <a href="change-profile-photo.html" class="button">Change Profile Photo</a>
+    </div>
+    
+  </form>
+
+  <footer>
+    <a href="home.html" aria-label="Home page">HOME</a>
+    <a href="assets.html" aria-label="Assets page">ASSETS</a>
+    <a href="settings.html" aria-label="Settings page">SETTINGS</a>
+    <a href="help.html" aria-label="Help page">HELP</a>
+  </footer>
 
   <script>
     async function fetchUserData() {
@@ -163,47 +209,19 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       fetchUserData();
-      document.getElementById('settings-form').addEventListener('submit', saveSettings);
+      document.getElementById('settings-form').addEventListener('submit', function(event) {
+        const phoneInput = document.getElementById('phoneNumber');
+        const phoneError = document.getElementById('phoneError');
+
+        if (!/^\d{10}$/.test(phoneInput.value)) {
+          phoneError.textContent = 'Phone number must be 10 digits.';
+          event.preventDefault();
+        } else {
+          phoneError.textContent = '';
+          saveSettings(event);
+        }
+      });
     });
   </script>
-</head>
-<body>
-  <h1>Settings</h1>
-  <form id="settings-form" enctype="multipart/form-data">
-    <div class="form-container">
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" name="firstName" required>
-    </div>
-    <div class="form-container">
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" name="lastName" required>
-    </div>
-    <div class="form-container">
-      <label for="phoneNumber">Phone Number:</label>
-      <input type="tel" id="phoneNumber" name="phoneNumber" pattern="[0-9]{10}" required>
-    </div>
-
-    <div class="form-container">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" readonly>
-    </div>
-
-    <button type="submit" class="button">Save Settings</button>
-
-    <div class="photo-preview" id="photo-preview">
-      <!-- Profile photo preview will be shown here -->
-    </div>
-    <div class="form-container">
-      <a href="change-profile-photo.html" class="button">Change Profile Photo</a>
-    </div>
-    
-  </form>
-
-  <footer>
-    <a href="home.html" aria-label="Home page">HOME</a>
-    <a href="assets.html" aria-label="Assets page">ASSETS</a>
-    <a href="settings.html" aria-label="Settings page">SETTINGS</a>
-    <a href="help.html" aria-label="Help page">HELP</a>
-  </footer>
 </body>
 </html>
