@@ -29,9 +29,9 @@ app.use((req, res, next) => {
 // MySQL connection
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'my_root_name',
-    password: 'mysql_password',
-    database: 'my_database_name'
+    user: 'my_root_name',               // CAN BE CHANGED
+    password: 'mysql_password',         // CAN BE CHANGED
+    database: 'my_database_name'        // CAN BE CHANGED
 });
 
 db.connect((err) => {
@@ -46,8 +46,8 @@ db.connect((err) => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'ogwenovincent00@gmail.com',
-        pass: 'App_password'
+        user: 'my_email',           // CAN BE CHANGED
+        pass: 'App_password'        // CAN BE CHANGED
     },
     tls: {
         rejectUnauthorized: false
@@ -115,7 +115,7 @@ app.post('/register', async (req, res) => {
 
                 // Send verification codes via email
                 const mailOptions = {
-                    from: 'ogwenovincent00@gmail.com',
+                    from: 'my_email',       //CAN BE CHANGED
                     to: email,
                     subject: 'Email and Phone Number Verification',
                     text: `Your email verification code is: ${emailToken}\nYour phone number verification code is: ${phoneToken}`
@@ -301,4 +301,8 @@ app.get('/home-data', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+})
+
+app.listen(PORT, '0.0.0.0', () => {
+   console.log(`Server running at http://0.0.0.0:${PORT}`);
 });
